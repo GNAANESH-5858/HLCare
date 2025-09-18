@@ -30,7 +30,7 @@ Emergency medical records system with QR authentication and AI-powered summaries
 
 - ABHA ID: `1234-5675-9877-98` (Arjun Kumar)
 - ABHA ID: `6789-0854-8484-85` (Ravi Singh)
-- Password: `test`
+
 
 ## API Endpoints
 
@@ -45,4 +45,5 @@ Emergency medical records system with QR authentication and AI-powered summaries
 - Backend: Python Flask
 - Frontend: HTML5, CSS3, JavaScript
 - Database: SQLite
+
 - QR Scanning: jsQR library
