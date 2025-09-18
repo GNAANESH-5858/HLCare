@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Link Care</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <style>
+        body {
+            font-family: Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #9adafa;
+        }
+
+        .slide {
+            display: none;
+            width: 90%;
+            max-width: 650px;
+            padding: 25px;
+            background: rgb(250, 252, 253);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .logo {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            margin: 0 auto 20px;
+            display: block;
+            border-radius: 10px;
+        }
+
+        input, button {
+            display: block;
+            width: 100%;
+            margin: 12px 0;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        input {
+            border: 1px solid #ddd;
+        }
+
+        button {
+            background-color: #1e3752;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2c4d76;
+        }
+
+        /* Detailed Reports Styling */
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #1e3752;
+            max-width: 100%;
+        }
+
+        .section h3 {
+            color: #1e3752;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+
+        .report-item {
+            background: white;
+            padding: 18px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .report-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+        }
+
+        .report-item p {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .report-item strong {
+            color: #1e3752;
+        }
+
+        .report-date {
+            color: #6c757d;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-top-color: #1e3752;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        video {
+            width: 100%;
+            max-width: 400px;
+            margin: 15px auto;
+            border: 2px solid #1e3752;
+            border-radius: 8px;
+        }
+
+        canvas {
+            display: none;
+        }
+
+        .error {
+            color: #d9534f;
+            padding: 12px;
+            background: #ffe6e6;
+            border-radius: 6px;
+            margin: 12px 0;
+            border: 1px solid #d9534f;
+        }
+
+        .success {
+            color: #28a745;
+            padding: 12px;
+            background: #e6ffe6;
+            border-radius: 6px;
+            margin: 12px 0;
+            border: 1px solid #28a745;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .slide {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .report-item {
+                width: 95%;
+                padding: 15px;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+            
+            .slide {
+                width: 100%;
+                border-radius: 0;
+                padding: 15px;
+            }
+            
+            .report-item {
+                width: 100%;
+                padding: 12px;
+                margin: 10px 0;
+            }
+            
+            .section {
+                padding: 12px;
+                margin: 15px 0;
+            }
+            
+            .section h3 {
+                font-size: 1.2em;
+            }
+            
+            .logo {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Slide 1: Name and Logo -->
+    <div id="slide1" class="slide active">
+        <img src="/logo.jpg" alt="Health Link Care Logo" class="logo" onerror="this.style.display='none'; document.getElementById('textLogo').style.display='block'">
+        <div id="textLogo" style="display: none; width: 150px; height: 150px; background: #1e3752; color: white; border-radius: 75px; display: none; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; margin: 0 auto 20px;">
+            HLC
+        </div>
+        <h1>Health Link Care</h1>
+        <button onclick="nextSlide()">Get Started</button>
+    </div>
+
+    <!-- Slide 2: Scan QR or Enter ABHA ID/Phone -->
+    <div id="slide2" class="slide">
+        <h2>Access Your Records</h2>
+        <button onclick="startQRScan()">Scan QR Code</button>
+        <p>or</p>
+        <input type="text" id="abhaInput" placeholder="Enter ABHA ID (e.g., 1234-5675-9877-98)">
+        <button onclick="submitAbha()">Submit</button>
+        <div id="errorMessage" class="error" style="display: none;"></div>
+        <button onclick="prevSlide()">Back</button>
+    </div>
+
+    <!-- Slide 3: QR Code Scanner -->
+    <div id="slide3" class="slide">
+        <h2>Scan QR Code</h2>
+        <video id="qrVideo" autoplay playsinline></video>
+        <canvas id="qrCanvas"></canvas>
+        <p id="qrStatus">Position QR code within the frame</p>
+        <button onclick="stopQRScan()">Cancel</button>
+        <button onclick="prevSlide()">Back</button>
+    </div>
+
+    <!-- Slide 4: Emergency Summary -->
+    <div id="slide4" class="slide">
+        <h2>Emergency Summary</h2>
+        <div id="emergencySummary">
+            <p>Loading emergency data...</p>
+        </div>
+        <button onclick="nextSlide()">View Detailed Reports (Authenticate)</button>
+        <button onclick="prevSlide()">Back</button>
+    </div>
+
+    <!-- Slide 5: Authentication -->
+    <div id="slide5" class="slide">
+        <h2>Authenticate for Detailed Reports</h2>
+        <button onclick="simulateFingerprint()">Use Fingerprint</button>
+        <p>or</p>
+        <input type="text" id="otpInput" placeholder="Enter Phone OTP">
+        <button onclick="verifyAuth()">Verify</button>
+        <div id="authMessage" class="error" style="display: none;"></div>
+        <button onclick="prevSlide()">Back</button>
+    </div>
+
+    <!-- Slide 6: Detailed Sections -->
+    <div id="slide6" class="slide">
+        <h2>Detailed Health Records</h2>
+        <div id="detailedRecords">
+            <p>Loading detailed records...</p>
+        </div>
+        <button onclick="showSlide(4)">Back to Summary</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        let qrStream = null;
+        let currentHealthId = '';
+        let qrScanningActive = false;
+
+        function showSlide(slideNumber) {
+            document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
+            document.getElementById(`slide${slideNumber}`).classList.add('active');
+            currentSlide = slideNumber;
+        }
+
+        function nextSlide() {
+            if (currentSlide === 2 && !validateAbhaInput()) return;
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                if (currentSlide === 3) stopQRScan();
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        function validateAbhaInput() {
+            const abha = document.getElementById('abhaInput').value;
+            if (!abha) {
+                showError('Please enter an ABHA ID');
+                return false;
+            }
+            return true;
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => errorDiv.style.display = 'none', 3000);
+        }
+
+        function submitAbha() {
+            const abhaInput = document.getElementById('abhaInput').value;
+            if (validateAbhaInput()) {
+                currentHealthId = abhaInput;
+                fetchEmergencyData();
+            }
+        }
+
+    async function startQRScan() {
+    const video = document.getElementById('qrVideo');
+    const canvas = document.getElementById('qrCanvas');
+    const qrStatus = document.getElementById('qrStatus');
+    const ctx = canvas.getContext('2d');
+    
+    // Clear any previous error messages
+    document.getElementById('errorMessage').style.display = 'none';
+
+    try {
+        // Request camera access
+        qrStream = await navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                facingMode: 'environment',
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            } 
+        });
+        
+        video.srcObject = qrStream;
+        showSlide(3);
+        qrScanningActive = true;
+        
+        // Set up video playback event
+        video.onloadedmetadata = function() {
+            video.play();
+            requestAnimationFrame(() => scanQRCode(video, canvas, ctx, qrStatus));
+        };
+        
+    } catch (err) {
+        console.error('Camera access error:', err);
+        
+        // Show a clear error message inside slide2
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.innerHTML = `
+            <p><strong>Camera Access Error</strong></p>
+            <p>${err.message || 'Unable to access camera. Please ensure permissions are granted.'}</p>
+            <p>Make sure you're using HTTPS or localhost for camera access to work.</p>
+        `;
+        errorDiv.style.display = 'block';
+        
+        // Stay on slide2
+        showSlide(2);
+    }
+}
+        
+
+    function scanQRCode(video, canvas, ctx, qrStatus) {
+    if (!qrScanningActive) return;
+    if (!qrStream || video.readyState !== 4) {
+        // Try again if video isn't ready
+        requestAnimationFrame(() => scanQRCode(video, canvas, ctx, qrStatus));
+        return;
+    }
+
+    // Make sure video dimensions match canvas
+    if (video.videoWidth === 0 || video.videoHeight === 0) {
+        requestAnimationFrame(() => scanQRCode(video, canvas, ctx, qrStatus));
+        return;
+    }
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    try {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height);
+        
+        if (code) {
+            console.log("QR Code detected:", code.data);
+            currentHealthId = code.data;
+            qrStatus.textContent = 'QR Code scanned successfully! Processing...';
+            
+            // Process the QR data after a brief delay for user feedback
+            setTimeout(() => {
+                stopQRScan();
+                fetchEmergencyData();
+            }, 800);
+        } else {
+            qrStatus.textContent = 'Position QR code within the frame';
+            requestAnimationFrame(() => scanQRCode(video, canvas, ctx, qrStatus));
+        }
+    } catch (error) {
+        console.error("Error scanning QR:", error);
+        requestAnimationFrame(() => scanQRCode(video, canvas, ctx, qrStatus));
+    }
+}
+
+        function stopQRScan() {
+            qrScanningActive = false;
+            if (qrStream) {
+                qrStream.getTracks().forEach(track => track.stop());
+                qrStream = null;
+                document.getElementById('qrVideo').srcObject = null;
+            }
+        }
+
+        async function fetchEmergencyData() {
+    try {
+        showSlide(4);
+        document.getElementById('emergencySummary').innerHTML = '<p>Loading emergency data...</p>';
+        
+        let healthId = currentHealthId;
+        
+        // If we have QR data that might need extraction, use the scan-qr API first
+        if (healthId && (healthId.includes('ABHA') || healthId.length > 17 || healthId.includes(' '))) {
+            console.log("QR data detected, extracting ABHA ID first:", healthId);
+            
+            const scanResponse = await fetch('http://127.0.0.1:5000/api/scan-qr', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    qr_data: healthId
+                })
+            });
+            
+            const scanData = await scanResponse.json();
+            
+            if (scanResponse.ok && scanData.status === "success") {
+                healthId = scanData.health_id;
+                console.log("Extracted ABHA ID:", healthId);
+            } else {
+                throw new Error(scanData.message || 'Failed to extract ABHA ID from QR code');
+            }
+        }
+        
+        // If no health ID is available, use the demo one
+        if (!healthId) {
+            healthId = '1234-5675-9877-98';
+        }
+        
+        console.log("Fetching emergency data for:", healthId);
+        const response = await fetch(`http://127.0.0.1:5000/emergency/${healthId}`);
+        
+        if (!response.ok) {
+            throw new Error('Patient not found. Please check the ID.');
+        }
+        
+        const data = await response.json();
+        
+        document.getElementById('emergencySummary').innerHTML = `
+            <div class="section">
+                <p><strong>Name:</strong> ${data.name}</p>
+                <p><strong>ABHA ID:</strong> ${data['ABHA id']}</p>
+                <p><strong>Blood Type:</strong> ${data.blood_group}</p>
+                <p><strong>Allergies:</strong> ${data.allergies}</p>
+                <p><strong>Emergency Contact:</strong> ${data.emergency_contact}</p>
+                <p><strong>Current Medications:</strong> ${data.current_medications}</p>
+                <p><strong>Medical Conditions:</strong> ${data.conditions}</p>
+                <p><strong>AI Summary:</strong> ${data.ai_summary}</p>
+            </div>
+        `;
+        
+    } catch (error) {
+        console.error("Fetch error:", error);
+        document.getElementById('emergencySummary').innerHTML = `
+            <div class="error">
+                <p>Error: ${error.message}</p>
+                <p>Make sure backend is running at http://127.0.0.1:5000</p>
+                <p>Tried to fetch ID: ${currentHealthId || 'None'}</p>
+            </div>
+        `;
+    }
+}
+
+        async function simulateFingerprint() {
+            const btn = document.querySelector('#slide5 button');
+            btn.classList.add('loading');
+            setTimeout(async () => {
+                btn.classList.remove('loading');
+                await performLogin();
+            }, 1000);
+        }
+
+        async function verifyAuth() {
+            const otp = document.getElementById('otpInput').value;
+            if (otp) {
+                await performLogin();
+            } else {
+                document.getElementById('authMessage').textContent = 'Please enter OTP.';
+                document.getElementById('authMessage').style.display = 'block';
+            }
+        }
+
+        async function performLogin() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        health_id: currentHealthId || '1234-5675-9877-98',
+                        password: 'test'
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.status === "success") {
+                    await fetchDetailedRecords();
+                    showSlide(6);
+                } else {
+                    throw new Error(data.message || 'Authentication failed');
+                }
+            } catch (error) {
+                document.getElementById('authMessage').textContent = error.message;
+                document.getElementById('authMessage').style.display = 'block';
+            }
+        }
+
+        async function fetchDetailedRecords() {
+            try {
+                document.getElementById('detailedRecords').innerHTML = '<p>Loading medical records...</p>';
+                
+                const response = await fetch(`http://127.0.0.1:5000/records/${currentHealthId || '1234-5675-9877-98'}`);
+                const data = await response.json();
+                
+                let recordsHTML = '';
+                if (data.reports && data.reports.length > 0) {
+                    // Group reports by section
+                    const sections = {};
+                    data.reports.forEach(report => {
+                        if (!sections[report.section]) {
+                            sections[report.section] = [];
+                        }
+                        sections[report.section].push(report);
+                    });
+                    
+                    // Create HTML for each section
+                    for (const [sectionName, reports] of Object.entries(sections)) {
+                        // Convert section name to title case
+                        const formattedSectionName = sectionName.charAt(0).toUpperCase() + sectionName.slice(1);
+                        
+                        recordsHTML += `
+                            <div class="section">
+                                <h3>${formattedSectionName} Reports</h3>
+                        `;
+                        
+                        reports.forEach(report => {
+                            recordsHTML += `
+                                <div class="report-item">
+                                    <p><strong>${report.title}:</strong> ${report.value}</p>
+                                    <p class="report-date">Date: ${report.date}</p>
+                                </div>
+                            `;
+                        });
+                        
+                        recordsHTML += `</div>`;
+                    }
+                } else {
+                    recordsHTML = '<p>No medical records found.</p>';
+                }
+                
+                document.getElementById('detailedRecords').innerHTML = recordsHTML;
+            } catch (error) {
+                document.getElementById('detailedRecords').innerHTML = `
+                    <div class="error">
+                        <p>Error loading medical records: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Handle logo loading issue
+        document.addEventListener('DOMContentLoaded', function() {
+            const logo = document.querySelector('.logo');
+            logo.onerror = function() {
+                this.style.display = 'none';
+                document.getElementById('textLogo').style.display = 'flex';
+            };
+        });
+        
+    </script>
+</body>
+</html>
